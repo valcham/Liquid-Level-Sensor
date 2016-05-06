@@ -3,12 +3,12 @@
 
 const int analogInPin = A0;  // Analog input pin that the potentiometer is attached to
 
-float sensorValue = 0;        // value read from the pot
-float outputValue = 0;      // value output to the PWM (analog out)
+float sensorValue = 0;       // value read from the pot
+float outputValue = 0;       // value output to the PWM (analog out)
 float tempValue = 0;
 float aveValue = 0;
-float viscosity = 0.20;     // average weight
-float mapValue = 0;
+float viscosity = 0.20;      // variable for weighted average
+float actThreashold = 508;   // activation threashold for sensor. found this value empirically. change if necessary.
 
 void setup() {
   // initialize serial communications at 9600 bps:
@@ -18,19 +18,18 @@ void setup() {
 void loop() {
   // read the analog in value:
   sensorValue = analogRead(analogInPin);
-  //mapValue = map(sensorValue, 508, 427, 1.35,5.4);
   // print the results to the serial monitor:
   Serial.print("sensor = " );
   Serial.print(sensorValue);
   
   // convert to inches
-  // check if below activation threashold
-  if (sensorValue == 508) {
+  // check if below activation threashold. 
+  if (sensorValue == actThreashold) {  
     outputValue = 1;
-    Serial.println("\t output is less than 1.35 inches");
+    Serial.println("\t output is less than 1.35 inches"); // determined 1.35 inches empirically
   }  
   else {
-    aveValue = 0;
+    aveValue = 0;  // reset average 
     for (int i = 0; i < 100; i++) {
       sensorValue = analogRead(analogInPin);
       //tempValue = -0.0519*sensorValue + 27.48;
@@ -41,6 +40,7 @@ void loop() {
     }
     // average values to reduce sensor noise
     aveValue = aveValue/100;
+    // perform moving average to low pass noise
     outputValue = (1-viscosity)*outputValue + viscosity*aveValue;
     
     // print out inch value
