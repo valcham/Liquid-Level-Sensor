@@ -1,7 +1,7 @@
 # Liquid-Level-Sensor
 Program for calibrating the liquid level sensor. Converts analog values to inch values. 
 Deterimine activation threshold for sensor in both analog and inch values. 
-Edit calibration equation to improve accuracy. Use wiki to find fit equation.
+Edit calibration equation to improve accuracy. Use info page to find fit equation.
 Edit viscosity value to tune moving average. 
 
 # Liquid-Level-Control
